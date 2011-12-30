@@ -14,6 +14,8 @@ namespace ice {
 
                 const char *get_id() const;
 
+                void format(std::ostream& stream) const;
+
             private:
                 std::string _id;
         };

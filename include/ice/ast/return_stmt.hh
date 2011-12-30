@@ -13,6 +13,8 @@ namespace ice {
 
                 expr *get_value() const;
 
+                void format(std::ostream& stream) const;
+
             private:
                 expr *_value;
         };

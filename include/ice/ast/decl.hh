@@ -12,6 +12,9 @@ namespace ice {
         };
         
         typedef std::list<decl*> decl_list;
+
+        void
+        format_decl_list(std::ostream& stream, const decl_list& list);
     };
 };
 

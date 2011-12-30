@@ -13,6 +13,8 @@ namespace ice {
 
                 expr *get_expr() const;
 
+                void format(std::ostream& stream) const;
+
             private:
                 expr_stmt(const expr_stmt& es) {}
                 const expr_stmt& operator=(const expr_stmt& es) { return *this; }

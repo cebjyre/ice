@@ -38,3 +38,31 @@ ice::ast::module::get_body() const
     return _body;
 }
 
+void
+ice::ast::module::format(std::ostream& stream) const
+{
+    stream << "module(";
+    if (_package != NULL) {
+        stream << "name=" << (_package->c_str()) << ", ";
+    }
+    stream << "imports=";
+    format_string_list(stream, get_imports());
+    stream << ", ";
+    stream << "body=";
+    format_decl_list(stream, get_body());
+    stream << ")";
+}
+
+void
+ice::ast::format_string_list(std::ostream& stream, const string_list& list)
+{
+    string_list::const_iterator iter = list.begin();
+    stream << "[";
+    while (iter != list.end()) {
+        stream << *iter;
+        iter++;
+        if (iter != list.end()) stream << ", ";
+    }
+    stream << "]";
+}
+

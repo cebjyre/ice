@@ -20,10 +20,15 @@ namespace ice {
                 const char *get_name() const;
                 const type_list& get_specializations() const;
 
+                void format(std::ostream& stream) const;
+
             private:
                 std::string _name;
                 type_list _specializations;
         };
+
+        void
+        format_type_list(std::ostream& stream, const type_list& list);
 
         class param : public node {
             public:
@@ -31,6 +36,9 @@ namespace ice {
                 virtual ~param();
 
                 const char *get_name() const;
+                type *get_type() const;
+
+                void format(std::ostream& stream) const;
 
             private:
                 std::string _name;
@@ -38,6 +46,9 @@ namespace ice {
         };
 
         typedef std::list<param*> param_list;
+
+        void
+        format_param_list(std::ostream& stream, const param_list& list);
 
         class func_decl : public decl {
             public:
@@ -48,6 +59,8 @@ namespace ice {
                 const param_list& get_params() const;
                 type *get_return_type() const;
                 const stmt_list& get_body() const;
+
+                void format(std::ostream& stream) const;
 
             private:
                 std::string _name;

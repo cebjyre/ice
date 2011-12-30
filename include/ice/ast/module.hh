@@ -19,6 +19,8 @@ namespace ice {
                 const string_list& get_imports() const;
                 const decl_list& get_body() const;
 
+                void format(std::ostream& stream) const;
+
                 //
                 // copy / assign not allowed
                 //
@@ -31,6 +33,8 @@ namespace ice {
                 string_list _imports;
                 decl_list   _body;
         };
+
+        void format_string_list(std::ostream& stream, const string_list& list);
     };
 };
 

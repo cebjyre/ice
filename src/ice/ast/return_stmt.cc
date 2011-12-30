@@ -16,3 +16,14 @@ ice::ast::return_stmt::get_value() const
     return _value;
 }
 
+void
+ice::ast::return_stmt::format(std::ostream& stream) const
+{
+    stream << "return_stmt(";
+    if (get_value() != NULL) {
+        stream << "value=";
+        get_value()->format(stream);
+    }
+    stream << ")";
+}
+

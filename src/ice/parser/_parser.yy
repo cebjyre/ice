@@ -57,11 +57,11 @@ func_decl: TOK_FUNC TOK_IDENT TOK_LBRACKET opt_param_list TOK_RBRACKET type TOK_
             { $$ = new ice::ast::func_decl($2.c_str(), $4, $6, $8); }
          ;
 
-opt_param_list: param opt_param_list_tail { $$ = $2; $$.push_back($1); }
+opt_param_list: param opt_param_list_tail { $$ = $2; $$.push_front($1); }
               | /* nil */ { $$; }
               ;
 
-opt_param_list_tail: TOK_COMMA param opt_param_list_tail { $$ = $3; $$.push_back($2); }
+opt_param_list_tail: TOK_COMMA param opt_param_list_tail { $$ = $3; $$.push_front($2); }
                    | /* nil */ { $$; }
                    ;
 

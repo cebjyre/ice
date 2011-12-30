@@ -12,6 +12,9 @@ namespace ice {
         };
 
         typedef std::list<stmt*> stmt_list;
+
+        void
+        format_stmt_list(std::ostream& stream, const stmt_list& list);
     };
 };
 

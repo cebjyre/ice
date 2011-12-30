@@ -16,3 +16,11 @@ ice::ast::expr_stmt::get_expr() const
     return _expr;
 }
 
+void
+ice::ast::expr_stmt::format(std::ostream& stream) const
+{
+    stream << "expr_stmt(expr=";
+    get_expr()->format(stream);
+    stream << ")";
+}
+

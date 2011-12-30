@@ -15,3 +15,9 @@ ice::ast::ident::get_id() const
     return _id.c_str();
 }
 
+void
+ice::ast::ident::format(std::ostream& stream) const
+{
+    stream << "ident(id=" << get_id() << ")";
+}
+
