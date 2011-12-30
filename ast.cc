@@ -53,6 +53,21 @@ ice::ast::ident::get_id() const
     return _id.c_str();
 }
 
+ice::ast::integer::integer(const char *value)
+    : _value(value)
+{
+}
+
+ice::ast::integer::~integer()
+{
+}
+
+const char *
+ice::ast::integer::get_value() const
+{
+    return _value.c_str();
+}
+
 ice::ast::type::type(const char *name, const type_list& specializations)
     : _name(name), _specializations(specializations)
 {
@@ -139,6 +154,22 @@ const ice::ast::stmt_list&
 ice::ast::func_decl::get_body() const
 {
     return _body;
+}
+
+ice::ast::return_stmt::return_stmt(expr *value)
+    : _value(value)
+{
+}
+
+ice::ast::return_stmt::~return_stmt()
+{
+    delete _value;
+}
+
+ice::ast::expr*
+ice::ast::return_stmt::get_value() const
+{
+    return _value;
 }
 
 ice::ast::expr_stmt::expr_stmt(expr *expr)

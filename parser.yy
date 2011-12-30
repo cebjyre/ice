@@ -13,13 +13,13 @@ void yyerror(const char *format, ...);
 
 %}
 
-%token <s> TOK_IDENT
-%token TOK_PACKAGE TOK_FUNC TOK_USE
+%token <s> TOK_IDENT TOK_INTEGER
+%token TOK_PACKAGE TOK_FUNC TOK_USE TOK_RETURN
 %token TOK_LBRACKET TOK_RBRACKET TOK_LBRACE TOK_RBRACE TOK_COMMA
 %token TOK_SEMICOLON TOK_LSQ TOK_RSQ
 %type <s> opt_package_decl package_decl
 %type <stmt> simple_stmt stmt
-%type <expr> expr ident
+%type <expr> expr opt_expr ident integer
 %type <stmt_list> stmt_list;
 %type <param_list> opt_param_list opt_param_list_tail;
 %type <param> param
@@ -88,10 +88,16 @@ stmt_list: stmt TOK_SEMICOLON stmt_list { $$ = $3; $$.push_front($1); }
 stmt: simple_stmt
     ;
 
-simple_stmt: expr { $$ = new ice::ast::expr_stmt($1); }
+simple_stmt: TOK_RETURN opt_expr { $$ = new ice::ast::return_stmt($2); }
+           | expr { $$ = new ice::ast::expr_stmt($1); }
            ;
 
+opt_expr: expr
+        | /* nil */ { $$ = NULL; }
+        ;
+
 expr: ident
+    | integer
     ;
 
 opt_package_decl: package_decl
@@ -103,6 +109,9 @@ package_decl: TOK_PACKAGE TOK_IDENT TOK_SEMICOLON { $$ = $2; }
 
 ident: TOK_IDENT { $$ = new ice::ast::ident($1.c_str()); }
      ;
+
+integer: TOK_INTEGER { $$ = new ice::ast::integer($1.c_str()); }
+       ;
 
 %%
 

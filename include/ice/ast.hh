@@ -49,6 +49,17 @@ namespace ice {
                 std::string _id;
         };
 
+        class integer : public expr {
+            public:
+                integer(const char *value);
+                virtual ~integer();
+
+                const char *get_value() const;
+
+            private:
+                std::string _value;
+        };
+
         class type;
 
         typedef std::list<type*> type_list;
@@ -95,6 +106,17 @@ namespace ice {
                 param_list _params;
                 type *_return_type;
                 stmt_list _body;
+        };
+
+        class return_stmt : public stmt {
+            public:
+                return_stmt(expr *value);
+                virtual ~return_stmt();
+
+                expr *get_value() const;
+
+            private:
+                expr *_value;
         };
 
         class expr_stmt : public stmt {
