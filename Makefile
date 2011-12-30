@@ -21,9 +21,9 @@ parser.cc: parser.yy
 
 parser.hh: parser.cc
 
-scanner.l: parser.hh
+scanner.ll: parser.hh
 
-scanner.cc: scanner.l
+scanner.cc: scanner.ll
 	$(FLEX) -o $@ $<
 
 clean:
