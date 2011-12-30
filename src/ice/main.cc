@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #include "ice/ast.hh"
-#include "ice/compiler.hh"
+#include "ice/parser.hh"
 
 extern int yyparse();
 
@@ -37,7 +37,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    ice::ast::module *mod = ice::compiler::compile(filename, fd);
+    ice::ast::module *mod = ice::parser::parse(filename, fd);
     if (mod == NULL) {
         std::fprintf(stderr, "compile failed\n");
         return 1;

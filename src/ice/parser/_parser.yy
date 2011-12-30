@@ -6,7 +6,7 @@
 #include <string>
 
 #include "ice/ast.hh"
-#include "ice/compiler.hh"
+#include "ice/parser.hh"
 
 extern int yylex(void);
 void yyerror(const char *format, ...);
@@ -35,7 +35,7 @@ void yyerror(const char *format, ...);
 
 module: opt_package_decl opt_use_list module_decl_list {
       $$ = new ice::ast::module($1.c_str(), $2, $3);
-      ice::compiler::push_result($$);
+      ice::parser::push_result($$);
 }
 ;
 

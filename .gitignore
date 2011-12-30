@@ -1,6 +1,6 @@
 /ice
 *.o
-/parser.cc
-/parser.hh
-/scanner.cc
+/src/ice/parser/_parser.cc
+/src/ice/parser/_parser.hh
+/src/ice/parser/_scanner.cc
 

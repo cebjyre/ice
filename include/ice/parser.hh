@@ -1,13 +1,13 @@
-#ifndef _ICE_COMPILER_HH_INCLUDED_
-#define _ICE_COMPILER_HH_INCLUDED_
+#ifndef _ICE_PARSER_HH_INCLUDED_
+#define _ICE_PARSER_HH_INCLUDED_
 
 namespace ice {
-    namespace compiler {
+    namespace parser {
         void
         push_result(ice::ast::module *mod);
 
         ice::ast::module*
-        compile(const char *filename, int fd);
+        parse(const char *filename, int fd);
 
         typedef struct _seminfo {
             std::string          s;
@@ -29,7 +29,7 @@ namespace ice {
 };
 
 #ifndef YYSTYPE
-#define YYSTYPE ice::compiler::seminfo
+#define YYSTYPE ice::parser::seminfo
 #endif
 
 #endif

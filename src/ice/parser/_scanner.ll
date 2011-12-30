@@ -1,9 +1,9 @@
 %{
 
 #include "ice/ast.hh"
-#include "ice/compiler.hh"
+#include "ice/parser.hh"
 
-#include "parser.hh"
+#include "ice/parser/_parser.hh"
 
 extern void yyerror(const char *, ...);
 

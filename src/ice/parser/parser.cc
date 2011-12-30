@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 #include "ice/ast.hh"
-#include "ice/compiler.hh"
+#include "ice/parser.hh"
 
 extern int yyparse(void);
 
@@ -12,13 +12,13 @@ static ice::ast::module *result = NULL;
 extern FILE *yyin;
 
 void
-ice::compiler::push_result(ice::ast::module *mod)
+ice::parser::push_result(ice::ast::module *mod)
 {
     result = mod;
 }
 
 ice::ast::module*
-ice::compiler::compile(const char *filename, int fd)
+ice::parser::parse(const char *filename, int fd)
 {
     ice::ast::module *mod;
     int rc;

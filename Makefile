@@ -1,8 +1,12 @@
-GENERATED_SOURCES=parser.cc scanner.cc
-GENERATED_HEADERS=parser.hh
-SOURCES=$(filter-out $(GENERATED_SOURCES),$(wildcard *.cc))
+GENERATED_SOURCES=src/ice/parser/_parser.cc src/ice/parser/_scanner.cc
+GENERATED_HEADERS=src/ice/parser/_parser.hh
+SOURCES=$(filter-out $(GENERATED_SOURCES), \
+		$(wildcard src/ice/*.cc \
+				   src/ice/parser/*.cc \
+				   src/ice/ast/*.cc))
+
 OBJECTS=$(patsubst %.cc,%.o,$(SOURCES) $(GENERATED_SOURCES))
-CXXFLAGS=-Wall -O0 -g -Iinclude
+CXXFLAGS=-Wall -O0 -g -Iinclude -Isrc
 LDFLAGS=
 BINARY=ice
 BISON=bison
@@ -16,14 +20,14 @@ $(BINARY): $(OBJECTS)
 %.o: %.cc
 	$(CXX) -o $@ $(CXXFLAGS) -c $<
 
-parser.cc: parser.yy
+src/ice/parser/_parser.cc: src/ice/parser/_parser.yy
 	$(BISON) -o $@ -d $<
 
-parser.hh: parser.cc
+src/ice/parser/_parser.hh: src/ice/parser/_parser.cc
 
-scanner.ll: parser.hh
+src/ice/parser/_scanner.ll: src/ice/parser/_parser.hh
 
-scanner.cc: scanner.ll
+src/ice/parser/_scanner.cc: src/ice/parser/_scanner.ll
 	$(FLEX) -o $@ $<
 
 clean:
