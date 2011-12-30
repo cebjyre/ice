@@ -2,7 +2,7 @@
 #define _ICE_AST_HH_INCLUDED_
 
 #include <string>
-#include <vector>
+#include <list>
 
 namespace ice {
     namespace ast {
@@ -18,7 +18,7 @@ namespace ice {
                 virtual ~stmt();
         };
 
-        typedef std::vector<stmt*> stmt_list;
+        typedef std::list<stmt*> stmt_list;
 
         class expr : public node {
             public:
@@ -26,7 +26,7 @@ namespace ice {
                 virtual ~expr();
         };
 
-        typedef std::vector<expr*> expr_list;
+        typedef std::list<expr*> expr_list;
 
         class ident : public expr {
             public:
@@ -56,9 +56,10 @@ namespace ice {
 
         class module : public node {
             public:
-                module(const stmt_list& body);
+                module(ident *package, const stmt_list& body);
                 virtual ~module();
 
+                ident* get_package() const;
                 const stmt_list& get_body() const;
 
                 //
@@ -69,6 +70,7 @@ namespace ice {
                 const module& operator=(const module &mod) { return *this; }
 
             private:
+                ident *_package;
                 stmt_list _body;
         };
     };

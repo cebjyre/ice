@@ -38,8 +38,17 @@ main(int argc, char **argv)
     }
 
     ice::ast::module *mod = ice::compiler::compile(filename, fd);
+    if (mod == NULL) {
+        std::fprintf(stderr, "compile failed\n");
+        return 1;
+    }
 
-    std::printf("%p\n", mod);
+    std::printf("%p", mod);
+    if (mod->get_package()) {
+        std::printf(" (%s)", mod->get_package()->get_id());
+    }
+    std::printf("\n");
+
     ice::ast::stmt_list::const_iterator iter = mod->get_body().begin();
     while (iter != mod->get_body().end()) {
         ice::ast::expr_stmt *stmt = (ice::ast::expr_stmt*)*iter;

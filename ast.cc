@@ -61,8 +61,8 @@ ice::ast::expr_stmt::get_expr() const
     return _expr;
 }
 
-ice::ast::module::module(const stmt_list& body)
-    : _body(body)
+ice::ast::module::module(ice::ast::ident *package, const stmt_list& body)
+    : _package(package), _body(body)
 {
 }
 
@@ -73,6 +73,13 @@ ice::ast::module::~module()
         delete *iter;
         iter++;
     }
+    delete _package;
+}
+
+ice::ast::ident*
+ice::ast::module::get_package() const
+{
+    return _package;
 }
 
 const ice::ast::stmt_list&
