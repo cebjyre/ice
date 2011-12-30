@@ -25,8 +25,8 @@ void yyerror(const char *format, ...);
 %type <param> param
 %type <decl> func_decl module_decl
 %type <decl_list> module_decl_list
-%type <type> type
-%type <type_list> type_list type_list_tail opt_type_tail
+%type <type> type opt_type
+%type <type_list> type_list type_list_tail type_tail
 %type <s> use
 %type <string_list> opt_use_list
 %type <mod> module
@@ -53,7 +53,7 @@ opt_use_list: use TOK_SEMICOLON opt_use_list { $$ = $3; $$.push_front($1); }
 use: TOK_USE TOK_IDENT { $$ = $2; }
    ;
 
-func_decl: TOK_FUNC TOK_IDENT TOK_LBRACKET opt_param_list TOK_RBRACKET type TOK_LBRACE stmt_list TOK_RBRACE
+func_decl: TOK_FUNC TOK_IDENT TOK_LBRACKET opt_param_list TOK_RBRACKET opt_type TOK_LBRACE stmt_list TOK_RBRACE
             { $$ = new ice::ast::func_decl($2.c_str(), $4, $6, $8); }
          ;
 
@@ -68,12 +68,16 @@ opt_param_list_tail: TOK_COMMA param opt_param_list_tail { $$ = $3; $$.push_fron
 param: TOK_IDENT type { $$ = new ice::ast::param($1.c_str(), $2); }
      ;
 
-type: TOK_IDENT opt_type_tail { $$ = new ice::ast::type($1.c_str(), $2); }
+opt_type: type
+        | /* nil */ { $$ = NULL; }
+        ;
+
+type: TOK_IDENT type_tail { $$ = new ice::ast::type($1.c_str(), $2); }
     ;
 
-opt_type_tail: TOK_LSQ type_list TOK_RSQ { $$ = $2; }
-             | /* nil */ { $$; }
-             ;
+type_tail: TOK_LSQ type_list TOK_RSQ { $$ = $2; }
+         | /* nil */ { $$; }
+         ;
 
 type_list: type type_list_tail { $$ = $2; $$.push_front($1); }
          ;
