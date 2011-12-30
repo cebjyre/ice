@@ -1,5 +1,6 @@
 /ice
 *.o
+*.swp
 /src/ice/parser/_parser.cc
 /src/ice/parser/_parser.hh
 /src/ice/parser/_scanner.cc
