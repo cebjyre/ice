@@ -15,6 +15,7 @@ extern void yyerror(const char *, ...);
 %%
 
 [\r\n\t ] ;
+";"       return TOK_SEMICOLON;
 "package" return TOK_PACKAGE;
 [a-zA-Z_][a-zA-Z0-9_]* yylval.s = yytext; return TOK_IDENT;
 .       yyerror("invalid syntax: %s found", yytext); yyterminate();

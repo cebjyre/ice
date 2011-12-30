@@ -15,6 +15,7 @@ void yyerror(const char *format, ...);
 
 %token <s> TOK_IDENT
 %token TOK_PACKAGE
+%token TOK_SEMICOLON
 %type <s> opt_package_decl package_decl
 %type <stmt> simple_stmt stmt
 %type <expr> expr ident
@@ -29,7 +30,7 @@ module: opt_package_decl stmt_list {
 }
 ;
 
-stmt_list: stmt stmt_list { $$ = $2; $$.push_front($1); }
+stmt_list: stmt TOK_SEMICOLON stmt_list { $$ = $3; $$.push_front($1); }
          | /* nil */ { $$ = ice::ast::stmt_list(); }
          ;
 
@@ -46,7 +47,7 @@ opt_package_decl: package_decl
                 | /* nil */ { $$ = ""; }
                 ;
 
-package_decl: TOK_PACKAGE TOK_IDENT { $$ = $2; }
+package_decl: TOK_PACKAGE TOK_IDENT TOK_SEMICOLON { $$ = $2; }
             ;
 
 ident: TOK_IDENT { $$ = new ice::ast::ident($1.c_str()); }
