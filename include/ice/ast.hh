@@ -56,10 +56,10 @@ namespace ice {
 
         class module : public node {
             public:
-                module(ident *package, const stmt_list& body);
+                module(const char *package, const stmt_list& body);
                 virtual ~module();
 
-                ident* get_package() const;
+                const char *get_package() const;
                 const stmt_list& get_body() const;
 
                 //
@@ -70,7 +70,7 @@ namespace ice {
                 const module& operator=(const module &mod) { return *this; }
 
             private:
-                ident *_package;
+                std::string *_package;
                 stmt_list _body;
         };
     };

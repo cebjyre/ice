@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstring>
 
 #include "ice/ast.hh"
 
@@ -61,9 +62,12 @@ ice::ast::expr_stmt::get_expr() const
     return _expr;
 }
 
-ice::ast::module::module(ice::ast::ident *package, const stmt_list& body)
-    : _package(package), _body(body)
+ice::ast::module::module(const char *package, const stmt_list& body)
+    : _package(NULL), _body(body)
 {
+    if (package != NULL && std::strlen(package) > 0) {
+        _package = new std::string(package);
+    }
 }
 
 ice::ast::module::~module()
@@ -76,10 +80,10 @@ ice::ast::module::~module()
     delete _package;
 }
 
-ice::ast::ident*
+const char*
 ice::ast::module::get_package() const
 {
-    return _package;
+    return _package ? _package->c_str() : NULL;
 }
 
 const ice::ast::stmt_list&

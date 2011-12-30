@@ -45,7 +45,7 @@ main(int argc, char **argv)
 
     std::printf("%p", mod);
     if (mod->get_package()) {
-        std::printf(" (%s)", mod->get_package()->get_id());
+        std::printf(" (%s)", mod->get_package());
     }
     std::printf("\n");
 
