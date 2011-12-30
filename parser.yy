@@ -14,24 +14,65 @@ void yyerror(const char *format, ...);
 %}
 
 %token <s> TOK_IDENT
-%token TOK_PACKAGE
-%token TOK_SEMICOLON
+%token TOK_PACKAGE TOK_FUNC TOK_LBRACKET TOK_RBRACKET TOK_LBRACE TOK_RBRACE TOK_COMMA
+%token TOK_SEMICOLON TOK_LSQ TOK_RSQ
 %type <s> opt_package_decl package_decl
 %type <stmt> simple_stmt stmt
 %type <expr> expr ident
 %type <stmt_list> stmt_list;
+%type <param_list> opt_param_list opt_param_list_tail;
+%type <param> param
+%type <decl> func_decl module_decl
+%type <decl_list> module_decl_list
+%type <type> type
+%type <type_list> type_list type_list_tail opt_type_tail
 %type <mod> module
 
 %%
 
-module: opt_package_decl stmt_list {
+module: opt_package_decl module_decl_list {
       $$ = new ice::ast::module($1.c_str(), $2);
       ice::compiler::push_result($$);
 }
 ;
 
+module_decl_list: module_decl module_decl_list { $$ = $2; $$.push_front($1); }
+                | /* nil */ { $$; }
+                ;
+
+module_decl: func_decl
+           ;
+
+func_decl: TOK_FUNC TOK_IDENT TOK_LBRACKET opt_param_list TOK_RBRACKET type TOK_LBRACE stmt_list TOK_RBRACE
+            { $$ = new ice::ast::func_decl($2.c_str(), $4, $6, $8); }
+         ;
+
+opt_param_list: param opt_param_list_tail { $$ = $2; $$.push_back($1); }
+              | /* nil */ { $$; }
+              ;
+
+opt_param_list_tail: TOK_COMMA param opt_param_list_tail { $$ = $3; $$.push_back($2); }
+                   | /* nil */ { $$; }
+                   ;
+
+param: TOK_IDENT type { $$ = new ice::ast::param($1.c_str(), $2); }
+     ;
+
+type: TOK_IDENT opt_type_tail { $$ = new ice::ast::type($1.c_str(), $2); }
+    ;
+
+opt_type_tail: TOK_LSQ type_list TOK_RSQ { $$ = $2; }
+             | /* nil */ { $$; }
+             ;
+
+type_list: type type_list_tail { $$ = $2; $$.push_front($1); }
+         ;
+
+type_list_tail: TOK_COMMA type type_list_tail { $$ = $3; $$.push_front($2); }
+              | /* nil */ { $$; };
+
 stmt_list: stmt TOK_SEMICOLON stmt_list { $$ = $3; $$.push_front($1); }
-         | /* nil */ { $$ = ice::ast::stmt_list(); }
+         | /* nil */ { $$; }
          ;
 
 stmt: simple_stmt

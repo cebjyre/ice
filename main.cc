@@ -49,11 +49,11 @@ main(int argc, char **argv)
     }
     std::printf("\n");
 
-    ice::ast::stmt_list::const_iterator iter = mod->get_body().begin();
+    ice::ast::decl_list::const_iterator iter = mod->get_body().begin();
     while (iter != mod->get_body().end()) {
-        ice::ast::expr_stmt *stmt = (ice::ast::expr_stmt*)*iter;
-        ice::ast::ident *ident = (ice::ast::ident*)stmt->get_expr();
-        std::printf("  \"%s\"\n", ident->get_id());
+        ice::ast::decl *decl = *iter;
+        ice::ast::func_decl *func_decl = (ice::ast::func_decl*)decl;
+        std::printf("  \"%s\"\n", func_decl->get_name());
         iter++;
     }
 }
