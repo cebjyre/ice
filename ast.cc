@@ -157,8 +157,8 @@ ice::ast::expr_stmt::get_expr() const
     return _expr;
 }
 
-ice::ast::module::module(const char *package, const decl_list& body)
-    : _package(NULL), _body(body)
+ice::ast::module::module(const char *package, const string_list& imports, const decl_list& body)
+    : _package(NULL), _imports(imports), _body(body)
 {
     if (package != NULL && std::strlen(package) > 0) {
         _package = new std::string(package);
@@ -179,6 +179,12 @@ const char*
 ice::ast::module::get_package() const
 {
     return _package ? _package->c_str() : NULL;
+}
+
+const ice::ast::string_list&
+ice::ast::module::get_imports() const
+{
+    return _imports;
 }
 
 const ice::ast::decl_list&

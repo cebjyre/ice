@@ -22,6 +22,7 @@ namespace ice {
             ice::ast::decl_list  decl_list;
             ice::ast::param_list param_list;
             ice::ast::type_list  type_list;
+            ice::ast::string_list string_list;
         } seminfo;
 
     };

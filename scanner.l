@@ -24,6 +24,7 @@ extern void yyerror(const char *, ...);
 "]"       return TOK_RSQ;
 ","       return TOK_COMMA;
 "func"    return TOK_FUNC;
+"use"     return TOK_USE;
 "package" return TOK_PACKAGE;
 [a-zA-Z_][a-zA-Z0-9_]* yylval.s = yytext; return TOK_IDENT;
 .       yyerror("invalid syntax: %s found", yytext); yyterminate();
