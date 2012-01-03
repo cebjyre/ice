@@ -80,3 +80,17 @@ typedef integer<unsigned short> uint16;
 typedef integer<unsigned int> uint32;
 typedef integer<unsigned long long> uint64;
 
+class pointer : public object {
+    public:
+        pointer(void *value) : _value(value) {}
+
+        string str() const {
+            return "<pointer>";
+        }
+
+        void *data() const { return _value; };
+
+    private:
+        void *_value;
+};
+
