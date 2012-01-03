@@ -1,7 +1,7 @@
-void write(const char *s) {
-    std::cout << s;
+void write(const string s) {
+    std::cout << s.data();
 }
 
-void writeline(const char *s) {
-    std::cout << s << "\n";
+void writeline(const string& s) {
+    std::cout << s.data() << "\n";
 }

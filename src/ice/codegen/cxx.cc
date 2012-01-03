@@ -26,11 +26,15 @@ class cxx_visitor : public ice::ast::visitor {
 
         void visit(ice::ast::expr_stmt *e);
 
+        void visit(ice::ast::return_stmt *r);
+
         void visit(ice::ast::getattr *getattr);
 
         void visit(ice::ast::call *call);
 
         void visit(ice::ast::ident *ident);
+
+        void visit(ice::ast::integer *i);
 
         void visit(ice::ast::string *s);
 
@@ -42,6 +46,10 @@ class cxx_visitor : public ice::ast::visitor {
         void writeline(const char *s);
         void writeline();
         void writestream(std::istream& in);
+
+        void _do_builtins();
+        void _do_imports();
+        void _do_main();
 
         void set_scope(scope s);
         scope get_scope() const;
@@ -79,28 +87,19 @@ static void visit_all(std::list<T> list, ice::ast::visitor *v)
 }
 
 void
-cxx_visitor::visit(ice::ast::module *mod)
+cxx_visitor::_do_builtins()
 {
-    writeline("#include <iostream>");
-    writeline("#include <sstream>");
+    std::fstream in("modules/builtin.cc", std::ios::in | std::ios::binary);
+    writestream(in);
+}
 
-    writeline("");
-    writeline("typedef long long int64;");
-    writeline("typedef int int32;");
-    writeline("typedef short int16;");
-    writeline("typedef char int8;");
-    writeline("typedef unsigned long long uint64;");
-    writeline("typedef unsigned int uint32;");
-    writeline("typedef unsigned short uint16;");
-    writeline("typedef unsigned char uint8;");
-    writeline();
-    writeline();
-
-    _module = mod;
+void
+cxx_visitor::_do_imports()
+{
     _imports.clear();
 
-    ice::ast::import_list::const_iterator iter = mod->get_imports().begin();
-    while (iter != mod->get_imports().end()) {
+    ice::ast::import_list::const_iterator iter = _module->get_imports().begin();
+    while (iter != _module->get_imports().end()) {
         std::string filename = "modules/";
         filename += iter->first;
         filename += ".cc";
@@ -116,13 +115,11 @@ cxx_visitor::visit(ice::ast::module *mod)
 
         iter++;
     }
+}
 
-    push(mod, IN_MODULE);
-
-    visit_all(mod->get_body(), this);
-
-    pop();
-
+void
+cxx_visitor::_do_main()
+{
     if (_main && _main->get_params().empty()) {
         writeline("");
         writeline("");
@@ -138,6 +135,23 @@ cxx_visitor::visit(ice::ast::module *mod)
         }
         writeline("}");
     }
+}
+
+void
+cxx_visitor::visit(ice::ast::module *mod)
+{
+    _module = mod;
+
+    _do_builtins();
+    _do_imports();
+
+    push(mod, IN_MODULE);
+
+    visit_all(mod->get_body(), this);
+
+    pop();
+
+    _do_main();
 
     _module = NULL;
     _main = NULL;
@@ -147,6 +161,16 @@ void
 cxx_visitor::visit(ice::ast::expr_stmt *e)
 {
     e->get_expr()->accept(this);
+    writeline(";\n");
+}
+
+void
+cxx_visitor::visit(ice::ast::return_stmt *r)
+{
+    write("return ");
+    if (r->get_value()) {
+        r->get_value()->accept(this);
+    }
     writeline(";\n");
 }
 
@@ -223,6 +247,12 @@ void
 cxx_visitor::visit(ice::ast::ident *ident)
 {
     write(ident->get_id());
+}
+
+void
+cxx_visitor::visit(ice::ast::integer *i)
+{
+    write(i->get_value());
 }
 
 void
