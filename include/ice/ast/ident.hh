@@ -14,6 +14,7 @@ namespace ice {
 
                 const char *get_id() const;
 
+                bool is_ident() const { return true; };
                 void accept(visitor *v);
                 void format(std::ostream& stream) const;
 

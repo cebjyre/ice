@@ -13,6 +13,8 @@ namespace ice {
                 node();
                 virtual ~node();
 
+                virtual bool is_ident() const { return false; }
+
                 virtual void accept(visitor* v) = 0;
                 virtual void format(std::ostream& s) const = 0;
         };

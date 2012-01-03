@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ostream>
 #include <stack>
+#include <algorithm>
 #include <vector>
 
 #include "ice/ast.hh"
@@ -103,9 +104,12 @@ cxx_visitor::visit(ice::ast::module *mod)
         std::string filename = "modules/";
         filename += *iter;
         filename += ".cc";
-        std::cout << "importing " << filename.c_str() << "\n";
         std::fstream in(filename.c_str(), std::ios::in | std::ios::binary);
+        write("namespace "); write(iter->c_str()); writeline("{");
         writestream(in);
+        writeline();
+        writeline("};");
+        writeline();
         in.close();
         iter++;
     }
@@ -183,13 +187,24 @@ void
 cxx_visitor::visit(ice::ast::getattr *getattr)
 {
     getattr->get_target()->accept(this);
-    write("::");
+    if (getattr->get_target()->is_ident()) {
+        ice::ast::ident *ident = (ice::ast::ident*)getattr->get_target();
+        if (std::find(_imports.begin(), _imports.end(), ident->get_id()) != _imports.end()) {
+            write("::");
+        }
+        else {
+            write("->");
+        }
+    }
     getattr->get_attr()->accept(this);
 }
 
 void
 cxx_visitor::visit(ice::ast::call *call)
 {
+    if (call->get_target()->is_ident()) {
+        write("_ice_user__"); write(_module->get_package()); write("__");
+    }
     call->get_target()->accept(this);
     write("(");
     ice::ast::expr_list::const_iterator iter = call->get_args().begin();
