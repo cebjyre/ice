@@ -8,6 +8,7 @@
 
 #include "ice/ast.hh"
 #include "ice/parser.hh"
+#include "ice/codegen/cxx.hh"
 
 extern int yyparse();
 
@@ -45,5 +46,11 @@ main(int argc, char **argv)
 
     mod->format(std::cout);
     std::cout << "\n";
+
+    ice::codegen::cxx(filename, mod);
+
+    delete mod;
+
+    return 0;
 }
 

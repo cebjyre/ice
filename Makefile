@@ -3,7 +3,8 @@ GENERATED_HEADERS=src/ice/parser/_parser.hh
 SOURCES=$(filter-out $(GENERATED_SOURCES), \
 		$(wildcard src/ice/*.cc \
 				   src/ice/parser/*.cc \
-				   src/ice/ast/*.cc))
+				   src/ice/ast/*.cc \
+				   src/ice/codegen/*.cc))
 
 OBJECTS=$(patsubst %.cc,%.o,$(SOURCES) $(GENERATED_SOURCES))
 CXXFLAGS=-Wall -O0 -g -Iinclude -Isrc
