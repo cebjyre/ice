@@ -14,7 +14,7 @@ void yyerror(const char *format, ...);
 %}
 
 %token <s> TOK_IDENT TOK_INTEGER TOK_STRING
-%token TOK_PACKAGE TOK_FUNC TOK_USE TOK_RETURN
+%token TOK_PACKAGE TOK_FUNC TOK_USE TOK_RETURN TOK_AS
 %token TOK_LBRACKET TOK_RBRACKET TOK_LBRACE TOK_RBRACE TOK_COMMA
 %token TOK_SEMICOLON TOK_LSQ TOK_RSQ TOK_PERIOD
 %type <s> opt_package_decl package_decl
@@ -28,8 +28,9 @@ void yyerror(const char *format, ...);
 %type <type> type opt_type
 %type <type_list> type_list type_list_tail type_tail
 %type <expr_list> opt_arg_list arg_list arg_list_tail
-%type <s> use
-%type <string_list> opt_use_list
+%type <import> use
+%type <s> use_tail
+%type <import_list> opt_use_list
 %type <mod> module
 
 %%
@@ -51,8 +52,12 @@ opt_use_list: use TOK_SEMICOLON opt_use_list { $$ = $3; $$.push_front($1); }
             | /* nil */ { $$; }
             ;
 
-use: TOK_USE TOK_IDENT { $$ = $2; }
+use: TOK_USE TOK_IDENT use_tail { $$ = ice::ast::import_list::value_type($2, $3.empty() ? $2 : $3); }
    ;
+
+use_tail: TOK_AS TOK_IDENT { $$ = $2; }
+        | /* nil */ { $$ = ""; }
+        ;
 
 func_decl: TOK_FUNC TOK_IDENT TOK_LBRACKET opt_param_list TOK_RBRACKET opt_type TOK_LBRACE stmt_list TOK_RBRACE
             { $$ = new ice::ast::func_decl($2.c_str(), $4, $6, $8); }

@@ -29,6 +29,8 @@ namespace ice {
             ice::ast::param_list param_list;
             ice::ast::type_list  type_list;
             ice::ast::string_list string_list;
+            ice::ast::import_list import_list;
+            ice::ast::import_list::value_type import;
         } seminfo;
 
     };

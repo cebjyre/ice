@@ -97,20 +97,23 @@ cxx_visitor::visit(ice::ast::module *mod)
     writeline();
 
     _module = mod;
-    _imports = modules(mod->get_imports().begin(), mod->get_imports().end());
+    _imports.clear();
 
-    modules::const_iterator iter = _imports.begin();
-    while (iter != _imports.end()) {
+    ice::ast::import_list::const_iterator iter = mod->get_imports().begin();
+    while (iter != mod->get_imports().end()) {
         std::string filename = "modules/";
-        filename += *iter;
+        filename += iter->first;
         filename += ".cc";
         std::fstream in(filename.c_str(), std::ios::in | std::ios::binary);
-        write("namespace "); write(iter->c_str()); writeline("{");
+        write("namespace "); write(iter->second.c_str()); writeline("{");
         writestream(in);
         writeline();
         writeline("};");
         writeline();
         in.close();
+
+        _imports.push_back(iter->second);
+
         iter++;
     }
 

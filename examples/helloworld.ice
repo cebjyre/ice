@@ -1,9 +1,9 @@
 package main;
 
-use sys;
+use sys as Sys;
 
 func say_hello() {
-    sys.writeline("Hello, World!");
+    Sys.writeline("Hello, World!");
 }
 
 func main() int32 {
