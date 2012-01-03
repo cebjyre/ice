@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <vector>
 
 class string;
 
@@ -79,6 +80,26 @@ typedef integer<unsigned char> uint8;
 typedef integer<unsigned short> uint16;
 typedef integer<unsigned int> uint32;
 typedef integer<unsigned long long> uint64;
+
+template <class T>
+class array : public object {
+    public:
+        array<T>() {}
+        virtual ~array<T>() {}
+
+        string str() { return "<array>"; }
+
+        int32 size() const { return _values.size(); }
+        void clear() { _values.clear(); }
+        void push(const T& value) { _values.push_back(value); }
+        T pop() { T value = _values.back(); _values.pop_back(); return value; }
+
+        const T& operator[](int i) const { return _values[i]; }
+        T& operator[](int i) { return _values[i]; }
+
+    private:
+        std::vector<T> _values;
+};
 
 class pointer : public object {
     public:
