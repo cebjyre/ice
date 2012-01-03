@@ -11,6 +11,9 @@ namespace ice {
         class expr_stmt;
         class ident;
         class integer;
+        class call;
+        class getattr;
+        class string;
 
         class visitor {
             public:
@@ -34,9 +37,17 @@ namespace ice {
                 virtual void enter(expr_stmt *es) {}
                 virtual void leave(expr_stmt *es) {}
 
+                virtual void enter(call *c) {}
+                virtual void leave(call *c) {}
+                
+                virtual void enter(getattr *a) {}
+                virtual void leave(getattr *a) {}
+
                 virtual void visit(ident *id) {}
 
                 virtual void visit(integer *i) {}
+
+                virtual void visit(string *s) {}
 
             protected:
                 visitor() {}

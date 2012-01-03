@@ -13,13 +13,13 @@ void yyerror(const char *format, ...);
 
 %}
 
-%token <s> TOK_IDENT TOK_INTEGER
+%token <s> TOK_IDENT TOK_INTEGER TOK_STRING
 %token TOK_PACKAGE TOK_FUNC TOK_USE TOK_RETURN
 %token TOK_LBRACKET TOK_RBRACKET TOK_LBRACE TOK_RBRACE TOK_COMMA
-%token TOK_SEMICOLON TOK_LSQ TOK_RSQ
+%token TOK_SEMICOLON TOK_LSQ TOK_RSQ TOK_PERIOD
 %type <s> opt_package_decl package_decl
 %type <stmt> simple_stmt stmt
-%type <expr> expr opt_expr ident integer
+%type <expr> expr expr_tail opt_expr ident integer string
 %type <stmt_list> stmt_list;
 %type <param_list> opt_param_list opt_param_list_tail;
 %type <param> param
@@ -27,6 +27,7 @@ void yyerror(const char *format, ...);
 %type <decl_list> module_decl_list
 %type <type> type opt_type
 %type <type_list> type_list type_list_tail type_tail
+%type <expr_list> opt_arg_list arg_list arg_list_tail
 %type <s> use
 %type <string_list> opt_use_list
 %type <mod> module
@@ -100,9 +101,33 @@ opt_expr: expr
         | /* nil */ { $$ = NULL; }
         ;
 
-expr: ident
+expr: ident { ice::parser::push_expr($1); } expr_tail { $$ = $3; }
     | integer
+    | string
     ;
+
+expr_tail: TOK_PERIOD ident {
+            ice::ast::expr *expr = ice::parser::pop_expr();
+            expr = new ice::ast::getattr(expr, (ice::ast::ident*)$2);
+            ice::parser::push_expr(expr);
+         } expr_tail { $$ = $4; }
+         | TOK_LBRACKET opt_arg_list TOK_RBRACKET {
+            ice::ast::expr *expr = ice::parser::pop_expr();
+            expr = new ice::ast::call(expr, $2);
+            ice::parser::push_expr(expr);
+         } expr_tail { $$ = $5; }
+         | /* nil */ { $$ = ice::parser::pop_expr(); }
+         ;
+
+opt_arg_list: arg_list
+            | /* nil */ { $$; }
+            ;
+
+arg_list: expr arg_list_tail { $$ = $2; $$.push_front($1); }
+        ;
+
+arg_list_tail: TOK_COMMA expr arg_list_tail { $$ = $3; $$.push_front($2); }
+             | /* nil */ { $$; }
 
 opt_package_decl: package_decl
                 | /* nil */ { $$ = ""; }
@@ -113,6 +138,9 @@ package_decl: TOK_PACKAGE TOK_IDENT TOK_SEMICOLON { $$ = $2; }
 
 ident: TOK_IDENT { $$ = new ice::ast::ident($1.c_str()); }
      ;
+
+string: TOK_STRING { $$ = new ice::ast::string($1.c_str()); }
+      ;
 
 integer: TOK_INTEGER { $$ = new ice::ast::integer($1.c_str()); }
        ;

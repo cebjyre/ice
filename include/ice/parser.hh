@@ -6,6 +6,12 @@ namespace ice {
         void
         push_result(ice::ast::module *mod);
 
+        void
+        push_expr(ice::ast::expr *expr);
+
+        ice::ast::expr*
+        pop_expr();
+
         ice::ast::module*
         parse(const char *filename, int fd);
 

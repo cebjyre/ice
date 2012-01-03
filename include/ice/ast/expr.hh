@@ -12,6 +12,9 @@ namespace ice {
         };
 
         typedef std::list<expr*> expr_list;
+
+        void
+        format_expr_list(std::ostream& stream, const expr_list& list);
     };
 };
 

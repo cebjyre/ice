@@ -1,3 +1,5 @@
+#include <stack>
+
 #include <cstdio>
 
 #include <unistd.h>
@@ -7,7 +9,10 @@
 
 extern int yyparse(void);
 
+typedef std::stack<ice::ast::expr*> expr_stack;
+
 static ice::ast::module *result = NULL;
+static expr_stack stack;
 
 extern FILE *yyin;
 
@@ -15,6 +20,20 @@ void
 ice::parser::push_result(ice::ast::module *mod)
 {
     result = mod;
+}
+
+void
+ice::parser::push_expr(ice::ast::expr *expr)
+{
+    stack.push(expr);
+}
+
+ice::ast::expr*
+ice::parser::pop_expr()
+{
+    ice::ast::expr *expr = stack.top();
+    stack.pop();
+    return expr;
 }
 
 ice::ast::module*

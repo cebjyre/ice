@@ -12,6 +12,9 @@
 // expr
 #include "ice/ast/ident.hh"
 #include "ice/ast/integer.hh"
+#include "ice/ast/string.hh"
+#include "ice/ast/call.hh"
+#include "ice/ast/getattr.hh"
 
 // decl
 #include "ice/ast/func_decl.hh"
