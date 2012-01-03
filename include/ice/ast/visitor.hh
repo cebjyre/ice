@@ -7,6 +7,7 @@ namespace ice {
         class type;
         class param;
         class func_decl;
+        class var_decl;
         class return_stmt;
         class expr_stmt;
         class ident;
@@ -14,6 +15,7 @@ namespace ice {
         class call;
         class getattr;
         class string;
+        class assign;
 
         class visitor {
             public:
@@ -23,10 +25,12 @@ namespace ice {
                 virtual void visit(type *t) {}
                 virtual void visit(param *p) {}
                 virtual void visit(func_decl *fdecl) {}
+                virtual void visit(var_decl *vdecl) {}
                 virtual void visit(return_stmt *retstmt) {}
                 virtual void visit(expr_stmt *e) {}
                 virtual void visit(call *c) {}
                 virtual void visit(getattr *g) {}
+                virtual void visit(assign *a) {}
                 virtual void visit(ident *id) {}
                 virtual void visit(integer *i) {}
                 virtual void visit(string *s) {}

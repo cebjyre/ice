@@ -14,11 +14,11 @@ void yyerror(const char *format, ...);
 %}
 
 %token <s> TOK_IDENT TOK_INTEGER TOK_STRING
-%token TOK_PACKAGE TOK_FUNC TOK_USE TOK_RETURN TOK_AS
+%token TOK_PACKAGE TOK_FUNC TOK_USE TOK_RETURN TOK_AS TOK_VAR
 %token TOK_LBRACKET TOK_RBRACKET TOK_LBRACE TOK_RBRACE TOK_COMMA
-%token TOK_SEMICOLON TOK_LSQ TOK_RSQ TOK_PERIOD
+%token TOK_SEMICOLON TOK_LSQ TOK_RSQ TOK_PERIOD TOK_EQ
 %type <s> opt_package_decl package_decl
-%type <stmt> simple_stmt stmt
+%type <stmt> simple_stmt stmt var_decl
 %type <expr> simple_expr expr expr_tail opt_expr ident integer string
 %type <stmt_list> stmt_list;
 %type <param_list> opt_param_list opt_param_list_tail;
@@ -98,7 +98,11 @@ stmt_list: stmt TOK_SEMICOLON stmt_list { $$ = $3; $$.push_front($1); }
 stmt: simple_stmt
     ;
 
+var_decl: TOK_VAR TOK_IDENT type { $$ = new ice::ast::var_decl($2.c_str(), $3); }
+        ;
+
 simple_stmt: TOK_RETURN opt_expr { $$ = new ice::ast::return_stmt($2); }
+           | var_decl { /* TODO: add decl_stmt & make var_decl a real decl */ }
            | expr { $$ = new ice::ast::expr_stmt($1); }
            ;
 
@@ -124,6 +128,11 @@ expr_tail: TOK_PERIOD ident {
             expr = new ice::ast::call(expr, $2);
             ice::parser::push_expr(expr);
          } expr_tail { $$ = $5; }
+         | TOK_EQ expr {
+            ice::ast::expr *expr = ice::parser::pop_expr();
+            expr = new ice::ast::assign(expr, $2);
+            $$ = expr;
+         }
          | /* nil */ { $$ = ice::parser::pop_expr(); }
          ;
 

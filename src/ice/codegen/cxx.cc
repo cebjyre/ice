@@ -24,6 +24,8 @@ class cxx_visitor : public ice::ast::visitor {
 
         void visit(ice::ast::func_decl *fdecl);
 
+        void visit(ice::ast::var_decl *vdecl);
+
         void visit(ice::ast::expr_stmt *e);
 
         void visit(ice::ast::return_stmt *r);
@@ -32,11 +34,15 @@ class cxx_visitor : public ice::ast::visitor {
 
         void visit(ice::ast::call *call);
 
+        void visit(ice::ast::assign *assign);
+
         void visit(ice::ast::ident *ident);
 
         void visit(ice::ast::integer *i);
 
         void visit(ice::ast::string *s);
+
+        void visit(ice::ast::type *t);
 
     private:
         void push(ice::ast::node *node, scope s);
@@ -178,7 +184,8 @@ void
 cxx_visitor::visit(ice::ast::func_decl *fdecl)
 {
     if (fdecl->get_return_type()) {
-        writeline(fdecl->get_return_type()->get_name());
+        fdecl->get_return_type()->accept(this);
+        writeline();
     }
     else {
         writeline("void");
@@ -189,7 +196,7 @@ cxx_visitor::visit(ice::ast::func_decl *fdecl)
     ice::ast::param_list::const_iterator iter = fdecl->get_params().begin();
     while (iter != fdecl->get_params().end()) {
         ice::ast::param *param = (*iter);
-        write(param->get_type()->get_name()); write(" "); write(param->get_name());
+        param->get_type()->accept(this); write(" "); write(param->get_name());
         iter++;
         if (iter != fdecl->get_params().end()) write(", ");
     }
@@ -208,6 +215,15 @@ cxx_visitor::visit(ice::ast::func_decl *fdecl)
     writeline("");
 
     pop();
+}
+
+void
+cxx_visitor::visit(ice::ast::var_decl *vdecl)
+{
+    vdecl->get_type()->accept(this);
+    write(" ");
+    write(vdecl->get_name());
+    writeline(";");
 }
 
 void
@@ -248,6 +264,14 @@ cxx_visitor::visit(ice::ast::call *call)
 }
 
 void
+cxx_visitor::visit(ice::ast::assign *assign)
+{
+    assign->get_target()->accept(this);
+    write(" = ");
+    assign->get_value()->accept(this);
+}
+
+void
 cxx_visitor::visit(ice::ast::ident *ident)
 {
     write(ident->get_id());
@@ -268,6 +292,22 @@ cxx_visitor::visit(ice::ast::string *s)
     write("string(\"");
     write(s->get_value());
     write("\")");
+}
+
+void
+cxx_visitor::visit(ice::ast::type *t)
+{
+    write(t->get_name());
+    if (!t->get_specializations().empty()) {
+        write("<");
+        ice::ast::type_list::const_iterator iter = t->get_specializations().begin();
+        while (iter != t->get_specializations().end()) {
+            (*iter)->accept(this);
+            iter++;
+            if (iter != t->get_specializations().end()) write(", ");
+        }
+        write(">");
+    }
 }
 
 void

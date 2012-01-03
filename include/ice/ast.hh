@@ -15,9 +15,11 @@
 #include "ice/ast/string.hh"
 #include "ice/ast/call.hh"
 #include "ice/ast/getattr.hh"
+#include "ice/ast/assign.hh"
 
 // decl
 #include "ice/ast/func_decl.hh"
+#include "ice/ast/var_decl.hh"
 
 // stmt
 #include "ice/ast/return_stmt.hh"
