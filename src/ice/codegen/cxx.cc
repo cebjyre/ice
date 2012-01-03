@@ -345,7 +345,7 @@ ice::codegen::cxx(const char *filename, ice::ast::module *root)
     cxxfile += ".cc";
 
     // invoke g++ to generate a binary
-    execlp("g++", "g++", "-o", binary.c_str(), cxxfile.c_str(), NULL);
+    execlp("g++", "g++", "-Wall", "-o", binary.c_str(), cxxfile.c_str(), NULL);
 
     return true;
 }

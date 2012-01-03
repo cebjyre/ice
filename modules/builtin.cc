@@ -19,7 +19,7 @@ class string : public object {
         string(const std::string& s) : _value(s) {}
         virtual ~string() {}
 
-        const string& operator=(const string& s) { _value = s._value; }
+        const string& operator=(const string& s) { _value = s._value; return *this; }
         operator const char *() { return _value.c_str(); }
 
         const char *data() const { return _value.c_str(); }

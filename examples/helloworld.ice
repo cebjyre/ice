@@ -1,14 +1,13 @@
 package main;
 
-use sys as Sys;
+use sys;
 
 func say_hello() {
-    Sys.writeline(1.str());
-    Sys.writeline("Hello, World!");
+    sys.writeline(1.str());
+    sys.writeline("Hello, World!");
 }
 
-func main() int32 {
+func main() {
     say_hello();
-    return 0;
 }
 
