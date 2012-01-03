@@ -16,6 +16,7 @@ class string : public object {
     public:
         string(const char *value="") : _value(value) {};
         string(const string& s) : _value(s._value) {}
+        string(const std::string& s) : _value(s) {}
         virtual ~string() {}
 
         const string& operator=(const string& s) { _value = s._value; }
@@ -27,7 +28,15 @@ class string : public object {
 
     private:
         std::string _value;
+
+        friend string operator+(const string& a, const string& b);
 };
+
+string
+operator+(const string& a, const string& b)
+{
+    return string(a._value + b._value);
+}
 
 string
 object::str() const
