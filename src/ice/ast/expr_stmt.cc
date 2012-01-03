@@ -17,6 +17,14 @@ ice::ast::expr_stmt::get_expr() const
 }
 
 void
+ice::ast::expr_stmt::accept(visitor *v)
+{
+    v->enter(this);
+    _expr->accept(v);
+    v->leave(this);
+}
+
+void
 ice::ast::expr_stmt::format(std::ostream& stream) const
 {
     stream << "expr_stmt(expr=";

@@ -14,6 +14,7 @@ namespace ice {
 
                 const char *get_value() const;
 
+                void accept(visitor *v);
                 void format(std::ostream& stream) const;
 
             private:

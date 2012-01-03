@@ -16,6 +16,12 @@ ice::ast::ident::get_id() const
 }
 
 void
+ice::ast::ident::accept(visitor *v)
+{
+    v->visit(this);
+}
+
+void
 ice::ast::ident::format(std::ostream& stream) const
 {
     stream << "ident(id=" << get_id() << ")";

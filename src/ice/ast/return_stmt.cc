@@ -17,6 +17,14 @@ ice::ast::return_stmt::get_value() const
 }
 
 void
+ice::ast::return_stmt::accept(visitor *v)
+{
+    v->enter(this);
+    if (_value != NULL) _value->accept(v);
+    v->leave(this);
+}
+
+void
 ice::ast::return_stmt::format(std::ostream& stream) const
 {
     stream << "return_stmt(";

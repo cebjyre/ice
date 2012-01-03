@@ -20,6 +20,7 @@ namespace ice {
                 const char *get_name() const;
                 const type_list& get_specializations() const;
 
+                void accept(visitor *v);
                 void format(std::ostream& stream) const;
 
             private:
@@ -38,6 +39,7 @@ namespace ice {
                 const char *get_name() const;
                 type *get_type() const;
 
+                void accept(visitor *v);
                 void format(std::ostream& stream) const;
 
             private:
@@ -60,6 +62,7 @@ namespace ice {
                 type *get_return_type() const;
                 const stmt_list& get_body() const;
 
+                void accept(visitor *v);
                 void format(std::ostream& stream) const;
 
             private:

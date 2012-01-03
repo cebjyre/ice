@@ -23,5 +23,7 @@
 // module
 #include "ice/ast/module.hh"
 
+#include "ice/ast/visitor.hh"
+
 #endif
 

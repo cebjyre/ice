@@ -5,6 +5,7 @@
 
 #include "ice/ast/node.hh"
 #include "ice/ast/decl.hh"
+#include "ice/ast/visitor.hh"
 
 namespace ice {
     namespace ast {
@@ -19,6 +20,7 @@ namespace ice {
                 const string_list& get_imports() const;
                 const decl_list& get_body() const;
 
+                void accept(visitor *v);
                 void format(std::ostream& stream) const;
 
                 //

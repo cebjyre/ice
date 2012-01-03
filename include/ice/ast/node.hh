@@ -4,6 +4,8 @@
 #include <list>
 #include <ostream>
 
+#include "ice/ast/visitor.hh"
+
 namespace ice {
     namespace ast {
         class node {
@@ -11,6 +13,7 @@ namespace ice {
                 node();
                 virtual ~node();
 
+                virtual void accept(visitor* v) = 0;
                 virtual void format(std::ostream& s) const = 0;
         };
 

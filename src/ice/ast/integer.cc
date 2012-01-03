@@ -16,6 +16,12 @@ ice::ast::integer::get_value() const
 }
 
 void
+ice::ast::integer::accept(visitor *v)
+{
+    v->visit(this);
+}
+
+void
 ice::ast::integer::format(std::ostream& stream) const
 {
     stream << "integer(value=" << get_value() << ")";
