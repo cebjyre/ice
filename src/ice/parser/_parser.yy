@@ -19,7 +19,7 @@ void yyerror(const char *format, ...);
 %token TOK_SEMICOLON TOK_LSQ TOK_RSQ TOK_PERIOD
 %type <s> opt_package_decl package_decl
 %type <stmt> simple_stmt stmt
-%type <expr> expr expr_tail opt_expr ident integer string
+%type <expr> simple_expr expr expr_tail opt_expr ident integer string
 %type <stmt_list> stmt_list;
 %type <param_list> opt_param_list opt_param_list_tail;
 %type <param> param
@@ -106,9 +106,12 @@ opt_expr: expr
         | /* nil */ { $$ = NULL; }
         ;
 
-expr: ident { ice::parser::push_expr($1); } expr_tail { $$ = $3; }
-    | integer
-    | string
+simple_expr: ident
+           | integer
+           | string
+           ;
+
+expr: simple_expr { ice::parser::push_expr($1); } expr_tail { $$ = $3; }
     ;
 
 expr_tail: TOK_PERIOD ident {

@@ -214,14 +214,18 @@ void
 cxx_visitor::visit(ice::ast::getattr *getattr)
 {
     getattr->get_target()->accept(this);
+    bool module = false;
     if (getattr->get_target()->is_ident()) {
         ice::ast::ident *ident = (ice::ast::ident*)getattr->get_target();
         if (std::find(_imports.begin(), _imports.end(), ident->get_id()) != _imports.end()) {
-            write("::");
+            module = true;
         }
-        else {
-            write("->");
-        }
+    }
+    if (module) {
+        write("::");
+    }
+    else {
+        write(".");
     }
     getattr->get_attr()->accept(this);
 }
@@ -252,15 +256,18 @@ cxx_visitor::visit(ice::ast::ident *ident)
 void
 cxx_visitor::visit(ice::ast::integer *i)
 {
+    // XXX hard-coding int32 sucks */
+    write("int32(");
     write(i->get_value());
+    write(")");
 }
 
 void
 cxx_visitor::visit(ice::ast::string *s)
 {
-    write("\"");
+    write("string(\"");
     write(s->get_value());
-    write("\"");
+    write("\")");
 }
 
 void

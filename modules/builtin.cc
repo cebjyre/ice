@@ -9,7 +9,7 @@ class object {
         object() {}
         virtual ~object() {}
 
-        virtual string to_string() const;
+        virtual string str() const;
 };
 
 class string : public object {
@@ -23,20 +23,20 @@ class string : public object {
 
         const char *data() const { return _value.c_str(); }
 
-        string to_string() const;
+        string str() const;
 
     private:
         std::string _value;
 };
 
 string
-object::to_string() const
+object::str() const
 {
     return string("<object>");
 }
 
 string
-string::to_string() const
+string::str() const
 {
     return *this;
 }
@@ -47,7 +47,7 @@ class integer : public object {
         integer<T>(T value=0) : _value(value) {}
         virtual ~integer<T>() {}
 
-        string to_string() const {
+        string str() const {
             std::stringstream ss;
             ss << _value;
             return string(ss.str().c_str());
