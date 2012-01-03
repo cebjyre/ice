@@ -281,6 +281,17 @@ ice::codegen::cxx(const char *filename, ice::ast::module *root)
 
     root->accept(&v);
 
+    s.flush();
+    s.close();
+
+    std::string binary = filename;
+    binary = binary.substr(0, binary.length() - 4); // XXX
+    std::string cxxfile = filename;
+    cxxfile += ".cc";
+
+    // invoke g++ to generate a binary
+    execlp("g++", "g++", "-o", binary.c_str(), cxxfile.c_str(), NULL);
+
     return true;
 }
 
