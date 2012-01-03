@@ -19,9 +19,7 @@ ice::ast::expr_stmt::get_expr() const
 void
 ice::ast::expr_stmt::accept(visitor *v)
 {
-    v->enter(this);
-    _expr->accept(v);
-    v->leave(this);
+    v->visit(this);
 }
 
 void

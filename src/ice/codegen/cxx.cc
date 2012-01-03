@@ -1,6 +1,8 @@
 #include <fstream>
+#include <iostream>
 #include <ostream>
 #include <stack>
+#include <vector>
 
 #include "ice/ast.hh"
 
@@ -17,14 +19,19 @@ class cxx_visitor : public ice::ast::visitor {
         cxx_visitor(std::ostream& stream);
         virtual ~cxx_visitor();
 
-        void enter(ice::ast::module *mod);
-        void leave(ice::ast::module *mod);
+        void visit(ice::ast::module *mod);
 
-        void enter(ice::ast::func_decl *fdecl);
-        void leave(ice::ast::func_decl *fdecl);
+        void visit(ice::ast::func_decl *fdecl);
 
-        void enter(ice::ast::type *type);
-        void leave(ice::ast::type *type);
+        void visit(ice::ast::expr_stmt *e);
+
+        void visit(ice::ast::getattr *getattr);
+
+        void visit(ice::ast::call *call);
+
+        void visit(ice::ast::ident *ident);
+
+        void visit(ice::ast::string *s);
 
     private:
         void push(ice::ast::node *node, scope s);
@@ -33,6 +40,7 @@ class cxx_visitor : public ice::ast::visitor {
         void write(const char *s);
         void writeline(const char *s);
         void writeline();
+        void writestream(std::istream& in);
 
         void set_scope(scope s);
         scope get_scope() const;
@@ -43,10 +51,13 @@ class cxx_visitor : public ice::ast::visitor {
         stack _stack;
         ice::ast::module *_module;
         ice::ast::func_decl *_main;
+        typedef std::vector<std::string> modules;
+        modules _imports;
+        bool _ident_hack;
 };
 
 cxx_visitor::cxx_visitor(std::ostream& stream)
-    : _stream(stream), _scope(NONE), _module(NULL), _main(NULL)
+    : _stream(stream), _scope(NONE), _module(NULL), _main(NULL), _ident_hack(false)
 {
 }
 
@@ -54,8 +65,20 @@ cxx_visitor::~cxx_visitor()
 {
 }
 
+template <class T>
+static void visit_all(std::list<T> list, ice::ast::visitor *v)
+{
+    typename std::list<T>::const_iterator iter;
+
+    iter = list.begin();
+    while (iter != list.end()) {
+        (*iter)->accept(v);
+        iter++;
+    }
+}
+
 void
-cxx_visitor::enter(ice::ast::module *mod)
+cxx_visitor::visit(ice::ast::module *mod)
 {
     writeline("#include <iostream>");
     writeline("#include <sstream>");
@@ -73,13 +96,24 @@ cxx_visitor::enter(ice::ast::module *mod)
     writeline();
 
     _module = mod;
+    _imports = modules(mod->get_imports().begin(), mod->get_imports().end());
+
+    modules::const_iterator iter = _imports.begin();
+    while (iter != _imports.end()) {
+        std::string filename = "modules/";
+        filename += *iter;
+        filename += ".cc";
+        std::cout << "importing " << filename.c_str() << "\n";
+        std::fstream in(filename.c_str(), std::ios::in | std::ios::binary);
+        writestream(in);
+        in.close();
+        iter++;
+    }
 
     push(mod, IN_MODULE);
-}
 
-void
-cxx_visitor::leave(ice::ast::module *mod)
-{
+    visit_all(mod->get_body(), this);
+
     pop();
 
     if (_main && _main->get_params().empty()) {
@@ -103,7 +137,14 @@ cxx_visitor::leave(ice::ast::module *mod)
 }
 
 void
-cxx_visitor::enter(ice::ast::func_decl *fdecl)
+cxx_visitor::visit(ice::ast::expr_stmt *e)
+{
+    e->get_expr()->accept(this);
+    writeline(";\n");
+}
+
+void
+cxx_visitor::visit(ice::ast::func_decl *fdecl)
 {
     if (fdecl->get_return_type()) {
         writeline(fdecl->get_return_type()->get_name());
@@ -129,11 +170,9 @@ cxx_visitor::enter(ice::ast::func_decl *fdecl)
     if (_module->get_package() == std::string("main") && fdecl->get_name() == std::string("main")) {
         _main = fdecl;
     }
-}
 
-void
-cxx_visitor::leave(ice::ast::func_decl *fdecl)
-{
+    visit_all(fdecl->get_body(), this);
+
     writeline("}");
     writeline("");
 
@@ -141,13 +180,39 @@ cxx_visitor::leave(ice::ast::func_decl *fdecl)
 }
 
 void
-cxx_visitor::enter(ice::ast::type *type)
+cxx_visitor::visit(ice::ast::getattr *getattr)
 {
+    getattr->get_target()->accept(this);
+    write("::");
+    getattr->get_attr()->accept(this);
 }
 
 void
-cxx_visitor::leave(ice::ast::type *type)
+cxx_visitor::visit(ice::ast::call *call)
 {
+    call->get_target()->accept(this);
+    write("(");
+    ice::ast::expr_list::const_iterator iter = call->get_args().begin();
+    while (iter != call->get_args().end()) {
+        (*iter)->accept(this);
+        iter++;
+        if (iter != call->get_args().end()) write(", ");
+    }
+    write(")");
+}
+
+void
+cxx_visitor::visit(ice::ast::ident *ident)
+{
+    write(ident->get_id());
+}
+
+void
+cxx_visitor::visit(ice::ast::string *s)
+{
+    write("\"");
+    write(s->get_value());
+    write("\"");
 }
 
 void
@@ -181,6 +246,19 @@ void
 cxx_visitor::writeline()
 {
     writeline("");
+}
+
+void
+cxx_visitor::writestream(std::istream& in)
+{
+    char buf[8192];
+    size_t n;
+    while (!in.eof()) {
+        n = sizeof(buf);
+        n = in.readsome(buf, n);
+        if (n <= 0) break;
+        _stream.write(buf, n);
+    }
 }
 
 void

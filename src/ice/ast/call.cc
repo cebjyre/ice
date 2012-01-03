@@ -31,13 +31,7 @@ ice::ast::call::get_args() const
 void
 ice::ast::call::accept(visitor *v)
 {
-    v->enter(this);
-    expr_list::const_iterator iter = get_args().begin();
-    while (iter != get_args().end()) {
-        (*iter)->accept(v);
-        iter++;
-    }
-    v->leave(this);
+    v->visit(this);
 }
 
 void

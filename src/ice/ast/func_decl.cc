@@ -29,14 +29,7 @@ ice::ast::type::get_specializations() const
 void
 ice::ast::type::accept(visitor *v)
 {
-    type_list::const_iterator iter = get_specializations().begin();
-
-    v->enter(this);
-    while (iter != get_specializations().end()) {
-        (*iter)->accept(v);
-        iter++;
-    }
-    v->leave(this);
+    v->visit(this);
 }
 
 void
@@ -89,9 +82,7 @@ ice::ast::param::get_type() const
 void
 ice::ast::param::accept(visitor *v)
 {
-    v->enter(this);
-    _type->accept(v);
-    v->leave(this);
+    v->visit(this);
 }
 
 void
@@ -166,13 +157,7 @@ ice::ast::func_decl::get_body() const
 void
 ice::ast::func_decl::accept(visitor *v)
 {
-    stmt_list::const_iterator iter = get_body().begin();
-    v->enter(this);
-    while (iter != get_body().end()) {
-        (*iter)->accept(v);
-        iter++;
-    }
-    v->leave(this);
+    v->visit(this);
 }
 
 void

@@ -19,34 +19,16 @@ namespace ice {
             public:
                 virtual ~visitor() {}
 
-                virtual void enter(module *mod) {}
-                virtual void leave(module *mod) {}
-
-                virtual void enter(type *t) {}
-                virtual void leave(type *t) {}
-
-                virtual void enter(param *p) {}
-                virtual void leave(param *p) {}
-
-                virtual void enter(func_decl *fdecl) {}
-                virtual void leave(func_decl *fdecl) {}
-
-                virtual void enter(return_stmt *retstmt) {}
-                virtual void leave(return_stmt *retstmt) {}
-
-                virtual void enter(expr_stmt *es) {}
-                virtual void leave(expr_stmt *es) {}
-
-                virtual void enter(call *c) {}
-                virtual void leave(call *c) {}
-                
-                virtual void enter(getattr *a) {}
-                virtual void leave(getattr *a) {}
-
+                virtual void visit(module *mod) {}
+                virtual void visit(type *t) {}
+                virtual void visit(param *p) {}
+                virtual void visit(func_decl *fdecl) {}
+                virtual void visit(return_stmt *retstmt) {}
+                virtual void visit(expr_stmt *e) {}
+                virtual void visit(call *c) {}
+                virtual void visit(getattr *g) {}
                 virtual void visit(ident *id) {}
-
                 virtual void visit(integer *i) {}
-
                 virtual void visit(string *s) {}
 
             protected:

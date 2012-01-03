@@ -41,14 +41,7 @@ ice::ast::module::get_body() const
 void
 ice::ast::module::accept(visitor *v)
 {
-    decl_list::const_iterator iter = get_body().begin();
-
-    v->enter(this);
-    while (iter != get_body().end()) {
-        (*iter)->accept(v);
-        iter++;
-    }
-    v->leave(this);
+    v->visit(this);
 }
 
 void

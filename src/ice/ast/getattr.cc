@@ -26,9 +26,7 @@ ice::ast::getattr::get_attr() const
 void
 ice::ast::getattr::accept(visitor *v)
 {
-    v->enter(this);
-    get_attr()->accept(v);
-    v->leave(this);
+    v->visit(this);
 }
 
 void
