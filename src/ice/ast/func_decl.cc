@@ -1,7 +1,7 @@
 #include "ice/ast/func_decl.hh"
 
-ice::ast::type::type(const char *name, const type_list& specializations)
-    : _name(name), _specializations(specializations)
+ice::ast::type::type(const char *name, const type_list& specializations, int pointer)
+    : _name(name), _specializations(specializations), _pointer(pointer)
 {
 }
 
@@ -26,6 +26,12 @@ ice::ast::type::get_specializations() const
     return _specializations;
 }
 
+int
+ice::ast::type::get_pointer() const
+{
+    return _pointer;
+}
+
 void
 ice::ast::type::accept(visitor *v)
 {
@@ -41,6 +47,8 @@ ice::ast::type::format(std::ostream& stream) const
         stream << ", specializations=";
         format_type_list(stream, get_specializations());
     }
+    stream << ", pointer=";
+    stream << get_pointer();
     stream << ")";
 }
 

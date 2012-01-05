@@ -308,6 +308,9 @@ cxx_visitor::visit(ice::ast::type *t)
         }
         write(">");
     }
+    for (int i = 0; i < t->get_pointer(); i++) {
+        write("*");
+    }
 }
 
 void

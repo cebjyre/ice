@@ -14,11 +14,12 @@ namespace ice {
 
         class type : public node {
             public:
-                type(const char *name, const type_list& specializations);
+                type(const char *name, const type_list& specializations, int pointer=0);
                 virtual ~type();
 
                 const char *get_name() const;
                 const type_list& get_specializations() const;
+                int get_pointer() const;
 
                 void accept(visitor *v);
                 void format(std::ostream& stream) const;
@@ -26,6 +27,7 @@ namespace ice {
             private:
                 std::string _name;
                 type_list _specializations;
+                int _pointer;
         };
 
         void

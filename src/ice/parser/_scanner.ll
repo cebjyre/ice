@@ -25,6 +25,7 @@ extern void yyerror(const char *, ...);
 ","       return TOK_COMMA;
 "."       return TOK_PERIOD;
 "="       return TOK_EQ;
+"*"       return TOK_ASTERISK;
 "func"    return TOK_FUNC;
 "use"     return TOK_USE;
 "as"      return TOK_AS;

@@ -31,6 +31,7 @@ namespace ice {
             ice::ast::string_list string_list;
             ice::ast::import_list import_list;
             ice::ast::import_list::value_type import;
+            int n;
         } seminfo;
 
     };

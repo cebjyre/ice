@@ -16,7 +16,7 @@ void yyerror(const char *format, ...);
 %token <s> TOK_IDENT TOK_INTEGER TOK_STRING
 %token TOK_PACKAGE TOK_FUNC TOK_USE TOK_RETURN TOK_AS TOK_VAR
 %token TOK_LBRACKET TOK_RBRACKET TOK_LBRACE TOK_RBRACE TOK_COMMA
-%token TOK_SEMICOLON TOK_LSQ TOK_RSQ TOK_PERIOD TOK_EQ
+%token TOK_SEMICOLON TOK_LSQ TOK_RSQ TOK_PERIOD TOK_EQ TOK_ASTERISK
 %type <s> opt_package_decl package_decl
 %type <stmt> simple_stmt stmt var_decl
 %type <expr> simple_expr expr expr_tail opt_expr ident integer string
@@ -30,6 +30,7 @@ void yyerror(const char *format, ...);
 %type <expr_list> opt_arg_list arg_list arg_list_tail
 %type <import> use
 %type <s> use_tail
+%type <n> opt_asterisks
 %type <import_list> opt_use_list
 %type <mod> module
 
@@ -78,10 +79,13 @@ opt_type: type
         | /* nil */ { $$ = NULL; }
         ;
 
-type: TOK_IDENT type_tail { $$ = new ice::ast::type($1.c_str(), $2); }
+type: opt_asterisks TOK_IDENT type_tail { $$ = new ice::ast::type($2.c_str(), $3, $1); }
     ;
 
-type_tail: TOK_LSQ type_list TOK_RSQ { $$ = $2; }
+opt_asterisks: TOK_ASTERISK opt_asterisks { $$ = $2 + 1; }
+             | /* nil */ { $$ = 0; }
+
+type_tail: TOK_LSQ type_list TOK_RSQ type_tail { $$ = $2; }
          | /* nil */ { $$; }
          ;
 
