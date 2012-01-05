@@ -34,6 +34,10 @@ class cxx_visitor : public ice::ast::visitor {
 
         void visit(ice::ast::call *call);
 
+        void visit(ice::ast::alloc *alloc);
+
+        void visit(ice::ast::dealloc *dealloc);
+
         void visit(ice::ast::assign *assign);
 
         void visit(ice::ast::ident *ident);
@@ -241,7 +245,7 @@ cxx_visitor::visit(ice::ast::getattr *getattr)
         write("::");
     }
     else {
-        write(".");
+        write("->");
     }
     getattr->get_attr()->accept(this);
 }
@@ -261,6 +265,21 @@ cxx_visitor::visit(ice::ast::call *call)
         if (iter != call->get_args().end()) write(", ");
     }
     write(")");
+}
+
+void
+cxx_visitor::visit(ice::ast::alloc *alloc)
+{
+    write("new ");
+    alloc->get_type()->accept(this);
+}
+
+void
+cxx_visitor::visit(ice::ast::dealloc *dealloc)
+{
+    write("delete ");
+    dealloc->get_expr()->accept(this);
+    writeline(";");
 }
 
 void

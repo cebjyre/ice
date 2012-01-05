@@ -32,6 +32,8 @@ extern void yyerror(const char *, ...);
 "package" return TOK_PACKAGE;
 "return"  return TOK_RETURN;
 "var"     return TOK_VAR;
+"new"     return TOK_NEW;
+"delete"  return TOK_DELETE;
 [a-zA-Z_][a-zA-Z0-9_]* yylval.s = yytext; return TOK_IDENT;
 [0-9]+    yylval.s = yytext; return TOK_INTEGER;
 ["][^"]*["] yylval.s = yytext; return TOK_STRING;

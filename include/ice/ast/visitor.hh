@@ -16,6 +16,8 @@ namespace ice {
         class getattr;
         class string;
         class assign;
+        class alloc;
+        class dealloc;
 
         class visitor {
             public:
@@ -30,6 +32,8 @@ namespace ice {
                 virtual void visit(expr_stmt *e) {}
                 virtual void visit(call *c) {}
                 virtual void visit(getattr *g) {}
+                virtual void visit(alloc *a) {}
+                virtual void visit(dealloc *a) {}
                 virtual void visit(assign *a) {}
                 virtual void visit(ident *id) {}
                 virtual void visit(integer *i) {}

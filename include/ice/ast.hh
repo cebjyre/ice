@@ -16,6 +16,7 @@
 #include "ice/ast/call.hh"
 #include "ice/ast/getattr.hh"
 #include "ice/ast/assign.hh"
+#include "ice/ast/alloc.hh"
 
 // decl
 #include "ice/ast/func_decl.hh"
@@ -24,6 +25,7 @@
 // stmt
 #include "ice/ast/return_stmt.hh"
 #include "ice/ast/expr_stmt.hh"
+#include "ice/ast/dealloc.hh"
 
 // module
 #include "ice/ast/module.hh"
